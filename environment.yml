@@ -1,56 +1,44 @@
 name: baseEnv
 channels:
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
   - https://mirrors.ustc.edu.cn/anaconda/pkgs/free
-  - conda-forge
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
   - https://mirrors.ustc.edu.cn/anaconda/pkgs/free/
   - defaults
 dependencies:
-  - _libgcc_mutex=0.1=conda_forge
-  - _openmp_mutex=4.5=1_gnu
-  - appdirs=1.4.4=pyh9f0ad1d_0
-  - astroid=1.5.3=py36_0
-  - ca-certificates=2021.5.30=ha878542_0
-  - certifi=2021.5.30=py36h5fab9bb_0
-  - cffi=1.14.6=py36hc120d54_0
-  - cfgv=3.3.1=pyhd8ed1ab_0
-  - distlib=0.3.2=pyhd8ed1ab_0
-  - editdistance-s=1.0.0=py36h605e78d_1
-  - filelock=3.0.12=pyh9f0ad1d_0
-  - identify=2.2.13=pyhd8ed1ab_0
-  - importlib-metadata=4.8.1=py36h5fab9bb_0
-  - importlib_metadata=4.8.1=hd8ed1ab_0
-  - importlib_resources=5.2.2=pyhd8ed1ab_0
-  - isort=4.2.15=py36_0
-  - lazy-object-proxy=1.3.1=py36_0
-  - libffi=3.3=h58526e2_2
-  - libgcc-ng=11.1.0=hc902ee8_8
-  - libgomp=11.1.0=hc902ee8_8
-  - libstdcxx-ng=11.1.0=h56837e0_8
-  - nodeenv=1.6.0=pyhd8ed1ab_0
-  - openssl=1.0.2u=h516909a_0
-  - pip=9.0.1=py36_1
-  - pre-commit=2.15.0=py36h5fab9bb_0
-  - pycparser=2.20=pyh9f0ad1d_2
-  - pylint=1.7.2=py36_0
+  - certifi=2016.2.28=py36_0
+  - openssl=1.0.2l=0
   - python=3.6.2=0
-  - python_abi=3.6=2_cp36m
-  - pyyaml=5.4.1=py36h8f6f2f9_1
   - readline=6.2=2
   - setuptools=36.4.0=py36_1
-  - singledispatch=3.4.0.3=py36_0
-  - six=1.10.0=py36_0
   - sqlite=3.13.0=0
   - tk=8.5.18=0
-  - toml=0.10.2=pyhd8ed1ab_0
-  - typing_extensions=3.10.0.0=pyha770c72_0
-  - virtualenv=20.4.7=py36h5fab9bb_0
   - wheel=0.29.0=py36_0
-  - wrapt=1.10.11=py36_0
   - xz=5.2.3=0
-  - yaml=0.2.5=h516909a_0
-  - yapf=0.31.0=pyhd3eb1b0_0
-  - zipp=3.5.0=pyhd8ed1ab_0
   - zlib=1.2.11=0
+  - pip:
+    - astroid==2.8.3
+    - backports-entry-points-selectable==1.1.0
+    - cfgv==3.3.1
+    - distlib==0.3.3
+    - filelock==3.3.1
+    - identify==2.3.0
+    - importlib-metadata==4.8.1
+    - importlib-resources==5.3.0
+    - isort==5.9.3
+    - lazy-object-proxy==1.6.0
+    - mccabe==0.6.1
+    - nodeenv==1.6.0
+    - pip==21.3
+    - platformdirs==2.4.0
+    - pre-commit==2.15.0
+    - pylint==2.11.1
+    - pyyaml==6.0
+    - six==1.16.0
+    - toml==0.10.2
+    - typed-ast==1.4.3
+    - typing-extensions==3.10.0.2
+    - virtualenv==20.8.1
+    - wrapt==1.13.2
+    - yapf==0.31.0
+    - zipp==3.6.0
