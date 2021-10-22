@@ -23,7 +23,7 @@ repos:
         language: system
         types: [python]
 - repo: https://github.com/executablebooks/mdformat
-  rev: 0.7.10
+  rev: 0c86e45
   hooks:
   - id: mdformat
     additional_dependencies:
