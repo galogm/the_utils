@@ -10,9 +10,13 @@ repos:
     rev: v2.6.0
     hooks:
     -   id: reorder-python-imports
+-   repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.6.0  # Use the sha / tag you want to point at
+    hooks:
+    -   id: autopep8
 -   repo: local
     hooks:
-    -   id: yapf
+    -   id: yapf  # choose on from autopep8 or yapf
         name: yapf
         entry: yapf
         language: system
@@ -23,7 +27,7 @@ repos:
         language: system
         types: [python]
 - repo: https://github.com/executablebooks/mdformat
-  rev: 0c86e45
+  rev: 0.7.9  # 0.7.10 not support python 3.6
   hooks:
   - id: mdformat
     additional_dependencies:
