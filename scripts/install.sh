@@ -11,15 +11,13 @@
 # EOF
 
 # create and activate virtual environment
-python3.9 -m venv .venv
+# python3.9 -m venv .venv
 source .venv/bin/activate
 
 # update pip
-python -m pip install -U pip
+# python -m pip install -U pip
 
 # install requirements
 python -m pip install -r requirements.txt
-
-pre-commit install
 
 echo install requirements successfully!
