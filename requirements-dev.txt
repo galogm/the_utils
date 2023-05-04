@@ -7,3 +7,5 @@ mdformat_gfm>=0.3.5
 mdformat_frontmatter>=2.0.1
 mdformat_footnote>=0.1.1
 virtualenv==20.0.33
+jupyter>=1.0.0
+notebook>=6.5.4
