@@ -1,3 +1,22 @@
+[project]
+name = "name"
+version = "0.1.0"
+authors = [{ name = "galo.gm", email = "galo.gm.work@gmail.com" }]
+keywords = [""]
+description = "Load graph datasets."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/xxx"
+"Bug Tracker" = "https://github.com/xxx"
+
 [tool.yapf]
 based_on_style = "facebook"
 indent_width = 4
@@ -7,11 +26,6 @@ indent_dictionary_value = true
 column_limit = 100
 
 [tool.yapfignore]
-ignore_patterns = [
-".venv/**/*.py",
-"venv/**/*.py",
-]
 
 [tool.black]
 line-length = 100
-extend-exclude = """"""
