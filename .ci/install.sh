@@ -1,16 +1,16 @@
-# # install python 3.7.16 use pyenv
+# # install python 3.8.16 use pyenv
 # sudo apt-get install zlib1g-dev libffi-dev libreadline-dev libssl-dev libsqlite3-dev libncurses5 libncurses5-dev libncursesw5 lzma liblzma-dev libbz2-dev
-# pyenv install 3.7.16
-# pyenv local 3.7.16
+# pyenv install 3.8.16
+# pyenv local 3.8.16
 
 # create and activate virtual environment
-if [ ! -d '.venv' ]; then
-    python3 -m venv .venv && echo create venv
+if [ ! -d '.env' ]; then
+    python3 -m venv .env && echo create venv
 else
     echo venv exists
 fi
 
-source .venv/bin/activate
+source .env/bin/activate
 
 # # update pip
 # python -m pip install -U pip
@@ -19,7 +19,7 @@ source .venv/bin/activate
 # python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu113
 
 # # dgl cuda 11.3
-# python -m pip install dgl==1.0.2 -f https://data.dgl.ai/wheels/cu113/repo.html -i https://pypi.tuna.tsinghua.edu.cn/simple/
+# python -m pip install dgl==1.1 -f https://data.dgl.ai/wheels/cu113/repo.html -i https://pypi.tuna.tsinghua.edu.cn/simple/
 # python -m pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 # # install requirements

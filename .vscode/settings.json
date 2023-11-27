@@ -1,9 +1,9 @@
 {
-    "python.defaultInterpreterPath": ".venv/bin/python",
-    "python.formatting.provider": "yapf",
+    "python.defaultInterpreterPath": ".env/bin/python",
     "editor.wordWrap": "on",
-    "python.linting.enabled": true,
-    "python.linting.pylintPath": "pylint",
-    "python.linting.pylintUseMinimalCheckers": false,
-    "python.linting.pylintEnabled": true,
+    "python.languageServer": "Pylance",
+    "pylint.path": [".env/bin/pylint"],
+    "pylint.interpreter": [".env/bin/python"],
+    "black-formatter.path": [".env/bin/black"],
+    "black-formatter.interpreter": [".env/bin/python"]
 }

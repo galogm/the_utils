@@ -1,10 +1,10 @@
-# # install python 3.7.16 use pyenv
-# pyenv install 3.7.16
-# pyenv local 3.7.16
+# # install python 3.8.16 use pyenv
+# pyenv install 3.8.16
+# pyenv local 3.8.16
 
 # create and activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv .env
+source .env/bin/activate
 
 # update pip
 python -m pip install -U pip -i https://pypi.tuna.tsinghua.edu.cn/simple/
