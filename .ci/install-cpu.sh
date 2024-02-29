@@ -16,9 +16,9 @@ source .env/bin/activate
 # python -m pip install -U pip
 
 # # torch cuda 11.3
-python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu113
+python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 # # install requirements
-python -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+python -m pip install -r requirements.txt
 
 echo install requirements successfully!

@@ -1,21 +1,28 @@
-# Python Package Template
+# The Utils
 
 <div align="center">
 
-<!-- [![Latest Release](https://img.shields.io/github/v/tag/galogm/py_setting)](https://github.com/galogm/py_setting/tags) -->
+[![PYPI](https://img.shields.io/pypi/v/the_utils?style=flat)](https://pypi.org/project/the_utils/)  [![Latest Release](https://img.shields.io/github/v/tag/galogm/the_utils)](https://github.com/galogm/the_utils/tags)
 
 </div>
 
 ## Installation
 
 - python>=3.8
+- torch>=1.12
 
 ## Usage
+See [the_utils](https://galogm.github.io/the_utils) for docs.
 
+```python
+from the_utils import get_str_time
+
+current_time = get_str_time()
+```
 
 ## Requirements
 
-See [requirements-dev.txt](./requirements-dev.txt) and [requirements.txt](./requirements.txt).
+See [requirements-dev.txt](./requirements-dev.txt), [requirements.txt](./requirements.txt) and [pyproject.toml:dependencies](./pyproject.toml).
 
 ## Contributing
 

@@ -3,15 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to NAME' documentation!
+Welcome to the_utils' documentation!
 ======================================================
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Datasets
+   :maxdepth: 4
+   :caption: Utils
    :glob:
 
-   rst/data_info.rst
+   rst/the_utils.rst
 
 
 Index

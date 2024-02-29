@@ -16,9 +16,9 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'name'
-copyright = '2023, author'
-author = 'author'
+project = 'the_utils'
+copyright = '2023, galo.gm'
+author = 'galo.gm'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
