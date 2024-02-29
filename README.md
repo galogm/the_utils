@@ -15,7 +15,7 @@
 
 ## Requirements
 
-See [requirements-dev.txt](./requirements-dev.txt) and [requirements.txt](./requirements.txt).
+See [requirements-dev.txt](./requirements-dev.txt), [requirements.txt](./requirements.txt) and [pyproject.toml:dependencies](./pyproject.toml).
 
 ## Contributing
 
