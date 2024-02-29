@@ -12,7 +12,7 @@
 - torch>=1.12
 
 ## Usage
-See [the_utils](https://galogm.github.io/the_utils) for docs.
+See [the_utils_docs](https://galogm.github.io/the_utils_docs) for docs.
 
 ```python
 from the_utils import get_str_time
