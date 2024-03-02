@@ -1,10 +1,11 @@
-"""Utils for evaluation.
+"""Evaluation utils for unsupervised graph learning tasks.
 """
 
-# pylint: disable=invalid-name,invalid-name,too-many-locals
+# pylint: disable=invalid-name,too-many-locals
 import os
 import random
-from datetime import datetime
+from typing import Dict
+from typing import Tuple
 
 import numpy as np
 import torch
@@ -18,8 +19,7 @@ from sklearn.metrics import f1_score as F1
 from sklearn.metrics import normalized_mutual_info_score as NMI
 from sklearn.svm import LinearSVC
 
-from .common import get_str_time
-from .common import tab_printer
+from ..common import tab_printer
 
 
 def load_dict(filename_):
@@ -90,19 +90,19 @@ def cluster_eval(y_true, y_pred):
     l2 = list(set(y_pred))
     numclass2 = len(l2)
 
-    # NOTE: NOT force to assign a random node into a missing class
+    # NOTE: force to assign a random node into a missing class
     # fill out missing classes
-    # ind = 0
-    # if numclass1 != numclass2:
-    #     for i in l1:
-    #         if i in l2:
-    #             pass
-    #         else:
-    #             y_pred[ind] = i
-    #             ind += 1
+    ind = 0
+    if numclass1 != numclass2:
+        for i in l1:
+            if i in l2:
+                pass
+            else:
+                y_pred[ind] = i
+                ind += 1
 
-    # l2 = list(set(y_pred))
-    # numclass2 = len(l2)
+    l2 = list(set(y_pred))
+    numclass2 = len(l2)
 
     cost = np.zeros((numclass1, numclass2), dtype=int)
     for i, c1 in enumerate(l1):
@@ -113,7 +113,7 @@ def cluster_eval(y_true, y_pred):
 
     # match two clustering results by Munkres algorithm
     m = Munkres()
-    cost = cost.__neg__().tolist()
+    cost = (-cost).tolist()
     indexes = m.compute(cost)
 
     # get the match results
@@ -126,20 +126,13 @@ def cluster_eval(y_true, y_pred):
         ai = [ind for ind, elm in enumerate(y_pred) if elm == c2]
         new_predict[ai] = c
 
-    acc = ACC(y_true, new_predict)
-    f1_macro = F1(y_true, new_predict, average="macro")
-    nmi = NMI(y_true, new_predict, average_method="arithmetic")
-    ami = AMI(y_true, new_predict, average_method="arithmetic")
-    ari = ARI(y_true, new_predict)
-    return acc, nmi, ami, ari, f1_macro
-
-
-def unsup_eval(y_true, y_pred):
-    y_true = y_true.detach().cpu().numpy() if isinstance(y_true, torch.Tensor) else y_true
-    y_pred = y_pred.detach().cpu().numpy() if isinstance(y_pred, torch.Tensor) else y_pred
-
-    acc, nmi, ami, ari, f1_macro = cluster_eval(y_true, y_pred)
-    return acc, nmi, ami, ari, f1_macro
+    return (
+        ACC(y_true, new_predict),
+        NMI(y_true, new_predict, average_method="arithmetic"),
+        AMI(y_true, new_predict, average_method="arithmetic"),
+        ARI(y_true, new_predict),
+        F1(y_true, new_predict, average="macro"),
+    )
 
 
 def kmeans_test(X, y, n_clusters, repeat=10):
@@ -160,7 +153,7 @@ def kmeans_test(X, y, n_clusters, repeat=10):
             ami_score,
             ari_score,
             macro_f1,
-        ) = unsup_eval(
+        ) = cluster_eval(
             y_true=y,
             y_pred=y_pred,
         )
@@ -211,26 +204,36 @@ def svm_test(num_nodes, data_name, embeddings, labels, train_ratios=(10, 20, 30,
     return result_macro_f1_list, result_micro_f1_list
 
 
-def evaluate_results_nc(
-    labels,
-    num_classes,
-    num_nodes,
-    data_name,
-    embeddings,
-    quiet=False,
-    method="unsup",
-    alpha: float = 2.0,
-    beta: float = 2.0,
+def evaluate_clf_cls(
+    labels: np.ndarray,
+    num_classes: int,
+    num_nodes: int,
+    data_name: str,
+    embeddings: torch.Tensor,
+    quiet: bool = True,
+    method: str = "both",
 ):
-    if embeddings.shape[0] > num_nodes:
-        z_1 = embeddings[:num_nodes]
-        z_2 = embeddings[num_nodes:]
-        if (alpha <= 1) and (beta <= 1):
-            embeddings = alpha * z_1 + beta * z_2
-        else:
-            embeddings = torch.cat((z_1, z_2), 1)
+    """Evaluation of node classification (linear regression) and clustering.
 
-    if method in ("both", "sup"):
+    Args:
+        labels (np.ndarray): Labels.
+        num_classes (int): Num of classes.
+        num_nodes (int): Num of nodes.
+        data_name (str): Dataset name.
+        embeddings (torch.Tensor): Node embedding matrix.
+        quiet (bool, optional): Whether to print info. Defaults to True.
+        method (bool, optional): method for evaluation, \
+            "clf" for linear regression (node classification), \
+                "cls" for node clustering, "both" for both. Defaults to "both".
+
+    Returns:
+        _type_: _description_
+    """
+
+    acc_mean = acc_std = nmi_mean = nmi_std = ari_mean = ari_std = f1_mean = f1_std = 0
+    svm_macro_f1_list = svm_micro_f1_list = [(0, 0), (0, 0), (0, 0), (0, 0)]
+
+    if method in ("both", "clf"):
         (
             svm_macro_f1_list,
             svm_micro_f1_list,
@@ -241,30 +244,28 @@ def evaluate_results_nc(
             labels=labels,
         )
         if not quiet:
-            print("SVM test")
+            print("SVM test for linear regression:")
+            maf1 = [
+                f"{macro_f1_mean * 100:.2f}±{macro_f1_std * 100:.2f} ({train_size:.1f})" for (
+                    macro_f1_mean,
+                    macro_f1_std,
+                ), train_size in zip(svm_macro_f1_list, [10, 20, 30, 40])
+            ]
+            mif1 = [
+                f"{micro_f1_mean * 100:.2f}±{micro_f1_std * 100:.2f} ({train_size:.1f})" for (
+                    micro_f1_mean,
+                    micro_f1_std,
+                ), train_size in zip(svm_micro_f1_list, [10, 20, 30, 40])
+            ]
             tab_printer(
                 {
-                    "Macro F1":
-                        "\n".join(
-                            [
-                                f"{macro_f1_mean * 100:.2f}±{macro_f1_std * 100:.2f} ({train_size:.1f})"
-                                for (macro_f1_mean, macro_f1_std
-                                    ), train_size in zip(svm_macro_f1_list, [10, 20, 30, 40])
-                            ]
-                        ),
-                    "Micro F1":
-                        "\n".join(
-                            [
-                                f"{micro_f1_mean * 100:.2f}±{micro_f1_std * 100:.2f} ({train_size:.1f})"
-                                for (micro_f1_mean, micro_f1_std
-                                    ), train_size in zip(svm_micro_f1_list, [10, 20, 30, 40])
-                            ]
-                        ),
+                    "Macro F1": "\n".join(maf1),
+                    "Micro F1": "\n".join(mif1),
                 },
                 sort=False,
             )
 
-    if method in ("both", "unsup"):
+    if method in ("both", "cls"):
         (
             acc_mean,
             acc_std,
@@ -282,7 +283,7 @@ def evaluate_results_nc(
             num_classes,
         )
         if not quiet:
-            print("K-means test")
+            print("K-means test for node clustering:")
             tab_printer(
                 {
                     "ACC": f"{acc_mean * 100:.2f}±{acc_std * 100:.2f}",
@@ -293,11 +294,6 @@ def evaluate_results_nc(
                 },
                 sort=False,
             )
-
-    if method == "sup":
-        acc_mean = acc_std = nmi_mean = nmi_std = ari_mean = ari_std = f1_mean = f1_std = 0
-    elif method == "unsup":
-        svm_macro_f1_list = svm_micro_f1_list = [(0, 0), (0, 0), (0, 0), (0, 0)]
 
     return (
         svm_macro_f1_list,
@@ -315,25 +311,70 @@ def evaluate_results_nc(
     )
 
 
-def save_embedding(
-    node_embeddings: torch.tensor,
-    dataset_name: str,
-    model_name: str,
-    params: dict,
-    save_dir: str = "./save",
-    verbose: bool or int = True,
-):
-    dataset_name = dataset_name.replace("_", "-")
-    timestamp = get_str_time()
-    file_name = f"{dataset_name.lower()}_{model_name.lower()}_embeds_{timestamp}.pth"
-    file_path = os.path.join(save_dir, file_name)
+def evaluate_from_embeddings(
+    labels: np.ndarray,
+    num_classes: int,
+    num_nodes: int,
+    data_name: str,
+    embeddings: torch.Tensor,
+    quiet: bool = True,
+    method: str = "both",
+) -> Tuple[Dict, Dict]:
+    """evaluate embeddings with LR and Clustering.
 
-    result = {
-        "node_embeddings": node_embeddings.cpu().detach(),
-        "hyperparameters": params,
+    Args:
+        labels (np.ndarray): labels.
+        num_classes (int): number of classes.
+        num_nodes (int): number of nodes.
+        data_name (str): name of the datasets.
+        embeddings (torch.Tensor): embeddings.
+        quiet (bool, optional): whether to print info. Defaults to True.
+        method (bool, optional): method for evaluation, \
+            "clf" for linear regression (node classification), \
+                "cls" for node clustering, "both" for both. Defaults to "both".
+
+    Returns:
+        Tuple[Dict, Dict]: (clustering_results, classification_results)
+    """
+    # Call the evaluate_results_nc function with the loaded embeddings
+    (
+        svm_macro_f1_list,
+        svm_micro_f1_list,
+        acc_mean,
+        acc_std,
+        nmi_mean,
+        nmi_std,
+        ami_mean,
+        ami_std,
+        ari_mean,
+        ari_std,
+        f1_mean,
+        f1_std,
+    ) = evaluate_clf_cls(
+        labels,
+        num_classes,
+        num_nodes,
+        data_name,
+        embeddings,
+        quiet=quiet,
+        method=method,
+    )
+
+    # Format the output as desired
+    clustering_results = {
+        "ACC": f"{acc_mean * 100:.2f}±{acc_std * 100:.2f}",
+        "NMI": f"{nmi_mean * 100:.2f}±{nmi_std * 100:.2f}",
+        "AMI": f"{ami_mean * 100:.2f}±{ami_std * 100:.2f}",
+        "ARI": f"{ari_mean * 100:.2f}±{ari_std * 100:.2f}",
+        "MaF1": f"{f1_mean * 100:.2f}±{f1_std * 100:.2f}",
     }
 
-    torch.save(result, file_path)
+    svm_macro_f1_list = [f"{res[0] * 100:.2f}±{res[1] * 100:.2f}" for res in svm_macro_f1_list]
+    svm_micro_f1_list = [f"{res[0] * 100:.2f}±{res[1] * 100:.2f}" for res in svm_micro_f1_list]
 
-    if verbose:
-        print(f"Embeddings and hyperparameters saved to {file_path}")
+    classification_results = {}
+    for i, percent in enumerate(["10%", "20%", "30%", "40%"]):
+        classification_results[f"{percent}_MaF1"] = svm_macro_f1_list[i]
+        classification_results[f"{percent}_MiF1"] = svm_micro_f1_list[i]
+
+    return clustering_results, classification_results

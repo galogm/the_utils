@@ -1,11 +1,15 @@
 """Tmp saving and loading.
 """
 
+import os
 from pathlib import Path
 from pathlib import PurePath
 from typing import Tuple
+from typing import Union
 
 import torch
+
+from .common import get_str_time
 
 
 def get_modelfile_path(model_filename: str) -> PurePath:
@@ -77,3 +81,27 @@ def load_model(
     loss = checkpoint["loss"]
 
     return model, optimizer, epoch, loss
+
+
+def save_embedding(
+    node_embeddings: torch.tensor,
+    dataset_name: str,
+    model_name: str,
+    params: dict,
+    save_dir: str = "./save",
+    verbose: Union[bool, int] = True,
+):
+    dataset_name = dataset_name.replace("_", "-")
+    timestamp = get_str_time()
+    file_name = f"{dataset_name.lower()}_{model_name.lower()}_embeds_{timestamp}.pth"
+    file_path = os.path.join(save_dir, file_name)
+
+    result = {
+        "node_embeddings": node_embeddings.cpu().detach(),
+        "hyperparameters": params,
+    }
+
+    torch.save(result, file_path)
+
+    if verbose:
+        print(f"Embeddings and hyperparameters saved to {file_path}")
