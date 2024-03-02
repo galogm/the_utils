@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Union
 
 import pytz
 from texttable import Texttable
@@ -68,6 +69,7 @@ def tab_printer(
     cols_valign: List[str] = None,
     cols_dtype: List[str] = None,
     sort: bool = True,
+    verbose: Union[bool, int] = True,
 ) -> None:
     """Function to print the logs in a nice tabular format.
 
@@ -104,6 +106,7 @@ def tab_printer(
         table.set_cols_dtype(cols_dtype)
     table.add_rows(params)
 
-    print(table.draw())
+    if verbose:
+        print(table.draw())
 
     return table.draw()
