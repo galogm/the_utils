@@ -2,6 +2,21 @@
 
 
 
+## v0.2.1 (2024-03-02)
+
+### Chore
+
+* chore: update docs ([`21ac8dd`](https://github.com/galogm/the_utils/commit/21ac8dd379e30c25cf9be09b9a213a853db75efe))
+
+### Fix
+
+* fix: mkdir for save embeddings ([`fa2a32d`](https://github.com/galogm/the_utils/commit/fa2a32d40a77de12e324129f8248f280ae39a031))
+
+### Unknown
+
+* Merge branch &#39;master&#39; of github.com:galogm/graph_utils ([`7a2633d`](https://github.com/galogm/the_utils/commit/7a2633de11677a891f01eb09f209090227ff8bef))
+
+
 ## v0.2.0 (2024-03-02)
 
 ### Chore
