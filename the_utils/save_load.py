@@ -91,6 +91,16 @@ def save_embedding(
     save_dir: str = "./save",
     verbose: Union[bool, int] = True,
 ):
+    """Save embeddings.
+
+    Args:
+        node_embeddings (torch.tensor): node embeddings.
+        dataset_name (str): dataset name.
+        model_name (str): model name.
+        params (dict): parameter dict.
+        save_dir (str, optional): save dir. Defaults to "./save".
+        verbose (Union[bool, int], optional): whether to print debug info. Defaults to True.
+    """
     dataset_name = dataset_name.replace("_", "-")
     timestamp = get_str_time()
     file_name = f"{dataset_name.lower()}_{model_name.lower()}_embeds_{timestamp}.pth"

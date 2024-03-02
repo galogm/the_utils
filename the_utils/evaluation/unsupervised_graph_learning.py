@@ -5,6 +5,7 @@
 import os
 import random
 from typing import Dict
+from typing import List
 from typing import Tuple
 
 import numpy as np
@@ -212,7 +213,7 @@ def evaluate_clf_cls(
     embeddings: torch.Tensor,
     quiet: bool = True,
     method: str = "both",
-):
+) -> Tuple[List[Tuple[float]], float]:
     """Evaluation of node classification (linear regression) and clustering.
 
     Args:
@@ -227,7 +228,9 @@ def evaluate_clf_cls(
                 "cls" for node clustering, "both" for both. Defaults to "both".
 
     Returns:
-        _type_: _description_
+        Tuple[List[Tuple[float]], float]: [svm_macro_f1_list, svm_micro_f1_list, \
+            acc_mean, acc_std, nmi_mean, nmi_std, ami_mean, ami_std, ari_mean,ari_std, \
+                f1_mean, f1_std]
     """
 
     acc_mean = acc_std = nmi_mean = nmi_std = ari_mean = ari_std = f1_mean = f1_std = 0
