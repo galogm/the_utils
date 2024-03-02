@@ -21,7 +21,7 @@ copyright = '2023, galo.gm'
 author = 'galo.gm'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1'
+release = '0.2.2'
 
 
 # -- General configuration ---------------------------------------------------
