@@ -104,6 +104,7 @@ def save_embedding(
     dataset_name = dataset_name.replace("_", "-")
     timestamp = get_str_time()
     file_name = f"{dataset_name.lower()}_{model_name.lower()}_embeds_{timestamp}.pth"
+    Path(save_dir).mkdir(parents=True, exist_ok=True)
     file_path = os.path.join(save_dir, file_name)
 
     result = {

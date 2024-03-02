@@ -12,8 +12,8 @@ from texttable import Texttable
 
 def format_result(
     dataset: str,
-    source: str,
     model: str,
+    source: str = None,
     sort_kw: bool = True,
     timezone="Asia/Shanghai",
     **kwargs,
@@ -21,9 +21,11 @@ def format_result(
     if sort_kw:
         kwargs = dict(sorted(kwargs.items()))
 
+    if source is not None:
+        kwargs.update({"src": source})
+
     kwargs.update({
         "ds": dataset,
-        "src": source,
         "model": model,
         "time": get_str_time(timezone),
     })
