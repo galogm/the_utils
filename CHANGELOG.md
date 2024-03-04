@@ -2,6 +2,13 @@
 
 
 
+## v0.3.2 (2024-03-04)
+
+### Fix
+
+* fix: update sort rules for csv output ([`d15a94c`](https://github.com/galogm/the_utils/commit/d15a94ccafbb0cb516d0b8f978796f9a1033c25d))
+
+
 ## v0.3.1 (2024-03-04)
 
 ### Fix
