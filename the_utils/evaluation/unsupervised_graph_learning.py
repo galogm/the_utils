@@ -18,6 +18,7 @@ from sklearn.metrics import adjusted_mutual_info_score as AMI
 from sklearn.metrics import adjusted_rand_score as ARI
 from sklearn.metrics import f1_score as F1
 from sklearn.metrics import normalized_mutual_info_score as NMI
+from sklearn.metrics.cluster import contingency_matrix as ctg
 from sklearn.svm import LinearSVC
 
 from ..common import tab_printer
@@ -81,6 +82,15 @@ def split_train_test_nodes(
     return np.array(train_nodes), np.array(val_nodes), np.array(test_nodes)
 
 
+def purity(y_true, y_pred) -> float:
+    # compute contingency matrix (also called confusion matrix)
+    contingency_matrix = ctg(y_true, y_pred)
+    return np.sum(np.amax(
+        contingency_matrix,
+        axis=0,
+    )) / np.sum(contingency_matrix)
+
+
 def cluster_eval(y_true, y_pred):
     """code source: https://github.com/bdy9527/SDCN"""
     y_true = y_true.detach().cpu().numpy() if isinstance(y_true, torch.Tensor) else y_true
@@ -133,6 +143,7 @@ def cluster_eval(y_true, y_pred):
         AMI(y_true, new_predict, average_method="arithmetic"),
         ARI(y_true, new_predict),
         F1(y_true, new_predict, average="macro"),
+        purity(y_true, new_predict),
     )
 
 
@@ -145,6 +156,7 @@ def kmeans_test(X, y, n_clusters, repeat=10):
     ami_list = []
     ari_list = []
     f1_list = []
+    purity_list = []
     for _ in range(repeat):
         kmeans = KMeans(n_clusters=n_clusters, n_init="auto")
         y_pred = kmeans.fit_predict(X)
@@ -154,6 +166,7 @@ def kmeans_test(X, y, n_clusters, repeat=10):
             ami_score,
             ari_score,
             macro_f1,
+            purity_score,
         ) = cluster_eval(
             y_true=y,
             y_pred=y_pred,
@@ -163,6 +176,7 @@ def kmeans_test(X, y, n_clusters, repeat=10):
         ami_list.append(ami_score)
         ari_list.append(ari_score)
         f1_list.append(macro_f1)
+        purity_list.append(purity_score)
     return (
         np.mean(acc_list),
         np.std(acc_list),
@@ -174,6 +188,8 @@ def kmeans_test(X, y, n_clusters, repeat=10):
         np.std(ari_list),
         np.mean(f1_list),
         np.std(f1_list),
+        np.mean(purity_list),
+        np.std(purity_list),
     )
 
 
@@ -280,6 +296,8 @@ def evaluate_clf_cls(
             ari_std,
             f1_mean,
             f1_std,
+            purity_mean,
+            purity_std,
         ) = kmeans_test(
             embeddings,
             labels,
@@ -294,6 +312,7 @@ def evaluate_clf_cls(
                     "AMI": f"{ami_mean * 100:.2f}±{ami_std * 100:.2f}",
                     "ARI": f"{ari_mean * 100:.2f}±{ari_std * 100:.2f}",
                     "Macro F1": f"{f1_mean * 100:.2f}±{f1_std * 100:.2f}",
+                    "Purity": f"{purity_mean * 100:.2f}±{purity_std * 100:.2f}",
                 },
                 sort=False,
             )
@@ -311,6 +330,8 @@ def evaluate_clf_cls(
         ari_std,
         f1_mean,
         f1_std,
+        purity_mean,
+        purity_std,
     )
 
 
@@ -353,6 +374,8 @@ def evaluate_from_embeddings(
         ari_std,
         f1_mean,
         f1_std,
+        purity_mean,
+        purity_std,
     ) = evaluate_clf_cls(
         labels,
         num_classes,
@@ -370,6 +393,7 @@ def evaluate_from_embeddings(
         "AMI": f"{ami_mean * 100:.2f}±{ami_std * 100:.2f}",
         "ARI": f"{ari_mean * 100:.2f}±{ari_std * 100:.2f}",
         "MaF1": f"{f1_mean * 100:.2f}±{f1_std * 100:.2f}",
+        "Purity": f"{purity_mean * 100:.2f}±{purity_std * 100:.2f}",
     }
 
     svm_macro_f1_list = [f"{res[0] * 100:.2f}±{res[1] * 100:.2f}" for res in svm_macro_f1_list]
