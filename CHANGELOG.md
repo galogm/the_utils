@@ -2,6 +2,17 @@
 
 
 
+## v0.3.0 (2024-03-04)
+
+### Feature
+
+* feat: add purity for node clustering ([`fe77995`](https://github.com/galogm/the_utils/commit/fe77995c870cd03c6681b028f7b110899682dad9))
+
+### Unknown
+
+* Merge branch &#39;master&#39; of github.com:galogm/graph_utils ([`9d5fd41`](https://github.com/galogm/the_utils/commit/9d5fd4183e2fa540bad0ab59f9c2c646efd216ce))
+
+
 ## v0.2.2 (2024-03-02)
 
 ### Fix
