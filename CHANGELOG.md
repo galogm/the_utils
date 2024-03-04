@@ -2,6 +2,17 @@
 
 
 
+## v0.3.1 (2024-03-04)
+
+### Fix
+
+* fix: expose evaluation utils for Unsupervised Graph Learning and update docs ([`f71307b`](https://github.com/galogm/the_utils/commit/f71307b738ad691f6f6d4830acd6fc0fa844bfd0))
+
+### Unknown
+
+* Merge branch &#39;master&#39; of github.com:galogm/graph_utils ([`2ad9426`](https://github.com/galogm/the_utils/commit/2ad94264327bbb15e7284e36d02505e5e96f8683))
+
+
 ## v0.3.0 (2024-03-04)
 
 ### Feature

@@ -1,7 +1,7 @@
 """the_utils
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 from .bot import notify
 from .plt import draw_chart
