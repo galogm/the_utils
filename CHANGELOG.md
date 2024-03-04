@@ -2,6 +2,17 @@
 
 
 
+## v0.2.2 (2024-03-02)
+
+### Fix
+
+* fix: add verbose to tab_printer ([`0878d3d`](https://github.com/galogm/the_utils/commit/0878d3d4830699855ae10f72849f316f679828a9))
+
+### Unknown
+
+* Merge branch &#39;master&#39; of github.com:galogm/graph_utils ([`0f33848`](https://github.com/galogm/the_utils/commit/0f338488962099bd4cbc83c58ab508a7389cfa78))
+
+
 ## v0.2.1 (2024-03-02)
 
 ### Chore
