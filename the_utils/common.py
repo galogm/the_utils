@@ -15,12 +15,24 @@ def format_result(
     dataset: str,
     model: str,
     source: str = None,
-    sort_kw: bool = True,
+    sort_kw: bool = False,
     timezone="Asia/Shanghai",
     **kwargs,
-):
+) -> Dict:
+    """format results.
+
+    Args:
+        dataset (str): dataset name.
+        model (str): model name.
+        source (str, optional): data source. Defaults to None.
+        sort_kw (bool, optional): sort the kwargs with lowercase. Defaults to False.
+        timezone (str, optional): timezone. Defaults to "Asia/Shanghai".
+
+    Returns:
+        Dict: results dict.
+    """
     if sort_kw:
-        kwargs = dict(sorted(kwargs.items()))
+        kwargs = dict(sorted(kwargs.items(), key=lambda x: x[0].lower()))
 
     if source is not None:
         kwargs.update({"src": source})

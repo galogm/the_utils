@@ -40,7 +40,7 @@ def csv2file(
     tbody: List[Any] = None,
     refresh: bool = False,
     is_dict_list: bool = False,
-    sort_head: bool = True,
+    sort_head: bool = False,
 ) -> None:
     """save data to target_path of a csv file.
 
@@ -52,7 +52,8 @@ def csv2file(
         refresh (bool, optional): whether to clean the file first. Defaults to False.
         is_dict_list (bool, optional): whether the tbody is in the format of a list of dicts. \
             Defaults to False.
-        sort_head (bool, optional): whether to sort the head before writing. Defaults to True.
+        sort_head (bool, optional): whether to sort the head with lowercase before writing. \
+            Defaults to False.
 
     Example:
         .. code-block:: python
@@ -100,7 +101,7 @@ def csv2file(
         if tbody is not None:
             if is_dict_list:
                 if sort_head:
-                    keys = sorted(list(tbody[0].keys()))
+                    keys = sorted([h.lower() for h in list(tbody[0].keys())])
                     if os.stat(target_path).st_size == 0:
                         csv_write.writerow(keys)
                     tbody = [{k: b[k] for k in keys} for b in tbody]
@@ -114,7 +115,9 @@ def csv2file(
             else:
                 if thead is not None:
                     if sort_head:
-                        thead, tbody = list(zip(*sorted(zip(thead, tbody), key=lambda x: x[0])))
+                        thead, tbody = list(
+                            zip(*sorted(zip(thead, tbody), key=lambda x: x[0].lower()))
+                        )
                     if os.stat(target_path).st_size == 0:
                         csv_write.writerow(thead)
                 csv_write.writerow(tbody)
@@ -125,6 +128,7 @@ def save_to_csv_files(
     add_info: dict,
     csv_name: str,
     save_path="./results",
+    sort_head: bool = False,
 ) -> None:
     """Save the evaluation results to a local csv file.
 
@@ -133,6 +137,7 @@ def save_to_csv_files(
         add_info (dict): Additional information, such as data set name, method name.
         csv_name (str): csv file name to store.
         save_path (str, optional): Folder path to store. Defaults to './results'.
+        sort_head (bool, optional): whether to sort the head before writing. Defaults to False.
 
     Example:
         .. code-block:: python
@@ -163,4 +168,5 @@ def save_to_csv_files(
         tbody=list(results.values()),
         refresh=False,
         is_dict_list=False,
+        sort_head=sort_head,
     )
