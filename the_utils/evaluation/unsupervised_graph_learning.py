@@ -7,6 +7,7 @@ import random
 from typing import Dict
 from typing import List
 from typing import Tuple
+from typing import Union
 
 import numpy as np
 import torch
@@ -43,13 +44,26 @@ def save_dict(di_, filename_):
 
 
 def split_train_test_nodes(
-    num_nodes,
-    train_ratio,
-    valid_ratio,
-    data_name,
-    split_id=0,
-    fixed_split=True,
-):
+    num_nodes: int,
+    train_ratio: int,
+    valid_ratio: int,
+    data_name: str,
+    split_id: int = 0,
+    fixed_split: bool = True,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Split training and test set.
+
+    Args:
+        num_nodes (int): num of nodes.
+        train_ratio (int): training ratio.
+        valid_ratio (int): valid ratio.
+        data_name (str): dataset name.
+        split_id (int, optional): the idx of the split. Defaults to 0.
+        fixed_split (bool, optional): using fixed split. Defaults to True.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray, np.ndarray]: [train_idx, val_idx, test_idx]
+    """
     if fixed_split:
         file_path = f"../input/fixed_splits/{data_name}-{train_ratio}-{valid_ratio}-splits.npy"
         if not os.path.exists(file_path):
@@ -91,8 +105,19 @@ def purity(y_true, y_pred) -> float:
     )) / np.sum(contingency_matrix)
 
 
-def cluster_eval(y_true, y_pred):
-    """code source: https://github.com/bdy9527/SDCN"""
+def cluster_eval(
+    y_true: Union[torch.Tensor, np.ndarray],
+    y_pred: Union[torch.Tensor, np.ndarray],
+) -> Tuple[float]:
+    """Evaluate Clustering.
+
+    Args:
+        y_true (Union[torch.Tensor, np.ndarray]): ground truth label.
+        y_pred (Union[torch.Tensor, np.ndarray]): predicted label.
+
+    Returns:
+        Tuple[List[Tuple[float]], float]: [ACC, NMI, AMI, ARI, MacroF1, Purity]
+    """
     y_true = y_true.detach().cpu().numpy() if isinstance(y_true, torch.Tensor) else y_true
     y_pred = y_pred.detach().cpu().numpy() if isinstance(y_pred, torch.Tensor) else y_pred
 
@@ -147,7 +172,25 @@ def cluster_eval(y_true, y_pred):
     )
 
 
-def kmeans_test(X, y, n_clusters, repeat=10):
+def kmeans_test(
+    X: Union[torch.Tensor, np.ndarray],
+    y: Union[torch.Tensor, np.ndarray],
+    n_clusters: int,
+    repeat: int = 1,
+) -> Tuple[float]:
+    """Evaluate Embedding with kmeans.
+
+    Args:
+        X (Union[torch.Tensor, np.ndarray]): embedding.
+        y (Union[torch.Tensor, np.ndarray]): ground truth label.
+        n_clusters (int): num of clusters.
+        repeat (int, optional): kmeans repeat times. Defaults to 0.
+
+    Returns:
+        Tuple[List[Tuple[float]], float]: [svm_macro_f1_list, svm_micro_f1_list, \
+            acc_mean, acc_std, nmi_mean, nmi_std, ami_mean, ami_std, ari_mean,ari_std, \
+                f1_mean, f1_std, purity_mean, purity_std]
+    """
     y = y.detach().cpu().numpy() if isinstance(y, torch.Tensor) else y
     X = X.detach().cpu().numpy() if isinstance(X, torch.Tensor) else X
 
@@ -193,7 +236,29 @@ def kmeans_test(X, y, n_clusters, repeat=10):
     )
 
 
-def svm_test(num_nodes, data_name, embeddings, labels, train_ratios=(10, 20, 30, 40), repeat=10):
+def svm_test(
+    num_nodes: int,
+    data_name: str,
+    embeddings: torch.tensor,
+    labels: np.ndarray,
+    train_ratios: Tuple[int] = (10, 20, 30, 40),
+    repeat: int = 1,
+) -> Tuple[List[Tuple[float]]]:
+    """Linear regression (node classification) using SVM on embedding.
+
+    Args:
+        num_nodes (int): number of nodes.
+        data_name (str): dataset name.
+        embeddings (torch.tensor): node embeddings.
+        labels (np.ndarray): ground truth labels.
+        train_ratios (tuple, optional): split ratio of training set.\
+              Defaults to (10, 20, 30, 40).
+        repeat (int, optional): svm repeat times. Defaults to 0.
+
+    Returns:
+        Tuple[List[Tuple[float]]]: ([(mean, std),(mean, std),...] of macro_f1 \
+            for all train_ratios,[(mean, std),(mean, std),...] of micro_f1 for all train_ratios)
+    """
     result_macro_f1_list = []
     result_micro_f1_list = []
     for train_ratio in train_ratios:
@@ -246,7 +311,7 @@ def evaluate_clf_cls(
     Returns:
         Tuple[List[Tuple[float]], float]: [svm_macro_f1_list, svm_micro_f1_list, \
             acc_mean, acc_std, nmi_mean, nmi_std, ami_mean, ami_std, ari_mean,ari_std, \
-                f1_mean, f1_std]
+                f1_mean, f1_std, purity_mean, purity_std]
     """
 
     acc_mean = acc_std = nmi_mean = nmi_std = ari_mean = ari_std = f1_mean = f1_std = 0
@@ -344,7 +409,7 @@ def evaluate_from_embeddings(
     quiet: bool = True,
     method: str = "both",
 ) -> Tuple[Dict, Dict]:
-    """evaluate embeddings with LR and Clustering.
+    """Evaluate embeddings with node classification (linear regression) and clustering.
 
     Args:
         labels (np.ndarray): labels.
