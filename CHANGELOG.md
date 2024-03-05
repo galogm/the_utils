@@ -2,6 +2,13 @@
 
 
 
+## v0.3.4 (2024-03-05)
+
+### Fix
+
+* fix: evaluation bug ([`bff3924`](https://github.com/galogm/the_utils/commit/bff3924db47bae405128eeb356b9898e76683c80))
+
+
 ## v0.3.3 (2024-03-05)
 
 ### Performance

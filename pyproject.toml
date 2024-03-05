@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "the_utils"
-version = "0.3.3"
+version = "0.3.4"
 authors = [{ name = "galo.gm", email = "galo.gm.work@gmail.com" }]
 keywords = [""]
 description = ""
