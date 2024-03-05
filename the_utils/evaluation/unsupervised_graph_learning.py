@@ -279,14 +279,14 @@ def svm_test(
     """
     result_macro_f1_list = []
     result_micro_f1_list = []
-    for train_ratio in train_ratios:
+    for idx, train_ratio in enumerate(train_ratios):
         macro_f1_list = []
         micro_f1_list = []
         for i in range(repeat):
             train_idx, val_idx, test_idx = split_train_test_nodes(
                 num_nodes=num_nodes,
                 train_ratio=train_ratio,
-                valid_ratio=valid_ratios,
+                valid_ratio=valid_ratios[idx],
                 data_name=data_name,
                 split_id=i,
                 split_times=repeat,
@@ -361,7 +361,7 @@ def evaluate_clf_cls(
         ) = svm_test(
             num_nodes=num_nodes,
             data_name=data_name,
-            embeddings=embeddings,
+            embeddings=embeddings.cpu(),
             labels=labels,
             train_ratios=train_ratios,
             valid_ratios=valid_ratios,
@@ -406,7 +406,7 @@ def evaluate_clf_cls(
             purity_mean,
             purity_std,
         ) = kmeans_test(
-            X=embeddings,
+            X=embeddings.cpu(),
             y=labels,
             n_clusters=num_classes,
             repeat=cls_repeat,
