@@ -12,7 +12,6 @@ from typing import Union
 import numpy as np
 import torch
 from munkres import Munkres
-from six.moves import cPickle as pickle
 from sklearn.cluster import KMeans
 from sklearn.metrics import accuracy_score as ACC
 from sklearn.metrics import adjusted_mutual_info_score as AMI
@@ -23,24 +22,33 @@ from sklearn.metrics.cluster import contingency_matrix as ctg
 from sklearn.svm import LinearSVC
 
 from ..common import tab_printer
+from ..save_load import load_dict
+from ..save_load import save_dict
 
 
-def load_dict(filename_):
-    with open(filename_, "rb") as f:
-        ret_di = pickle.load(f)
-    return ret_di
+def generate_split(
+    num_nodes: int,
+    train_ratio: int,
+    valid_ratio: int,
+) -> Tuple[np.ndarray]:
+    """generate the train, val and test set.
 
+    Args:
+        num_nodes (int): num of nodes.
+        train_ratio (int): node ratio of training set.
+        valid_ratio (int): node ratio of valid set.
 
-def save_dict(di_, filename_):
-    # Get the directory path from the filename
-    dir_path = os.path.dirname(filename_)
+    Returns:
+        Tuple[np.ndarray]: [train set node ids, val set node ids, test set node ids]
+    """
+    shuffle = list(range(num_nodes))
+    random.shuffle(shuffle)
+    train_nodes = shuffle[:int(num_nodes * train_ratio / 100)]
+    val_nodes = shuffle[int(num_nodes * train_ratio /
+                            100):int(num_nodes * (train_ratio + valid_ratio) / 100)]
+    test_nodes = shuffle[int(num_nodes * (train_ratio + valid_ratio) / 100):]
 
-    # Create the directory if it does not exist
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
-
-    with open(filename_, "wb") as f:
-        pickle.dump(di_, f)
+    return np.array(train_nodes), np.array(val_nodes), np.array(test_nodes)
 
 
 def split_train_test_nodes(
@@ -49,7 +57,9 @@ def split_train_test_nodes(
     valid_ratio: int,
     data_name: str,
     split_id: int = 0,
+    split_times: int = 10,
     fixed_split: bool = True,
+    split_save_dir: str = "./data",
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Split training and test set.
 
@@ -59,25 +69,27 @@ def split_train_test_nodes(
         valid_ratio (int): valid ratio.
         data_name (str): dataset name.
         split_id (int, optional): the idx of the split. Defaults to 0.
-        fixed_split (bool, optional): using fixed split. Defaults to True.
+        split_times (int, optional): num of the random splits. Defaults to 10.
+        fixed_split (bool, optional): save the split after splitting once and load the fixed split \
+            next time. Defaults to True.
+        split_save_dir (str, optional): the dir for saving the fixed split. Defaults to './data'.
 
     Returns:
         Tuple[np.ndarray, np.ndarray, np.ndarray]: [train_idx, val_idx, test_idx]
     """
     if fixed_split:
-        file_path = f"../input/fixed_splits/{data_name}-{train_ratio}-{valid_ratio}-splits.npy"
+        file_path = (
+            f"{split_save_dir}/fixed_splits/{data_name}-{train_ratio}-{valid_ratio}-splits.npy"
+        )
         if not os.path.exists(file_path):
-            print("There is no generated fixed splits")
-            print("Generating fixed splits...")
+            print("No fixed splits found, generating...")
             splits = {}
-            for idx in range(10):
-                # set up train val and test
-                shuffle = list(range(num_nodes))
-                random.shuffle(shuffle)
-                train_nodes = shuffle[:int(num_nodes * train_ratio / 100)]
-                val_nodes = shuffle[int(num_nodes * train_ratio /
-                                        100):int(num_nodes * (train_ratio + valid_ratio) / 100)]
-                test_nodes = shuffle[int(num_nodes * (train_ratio + valid_ratio) / 100):]
+            for idx in range(split_times):
+                train_nodes, val_nodes, test_nodes = generate_split(
+                    num_nodes=num_nodes,
+                    train_ratio=train_ratio,
+                    valid_ratio=valid_ratio,
+                )
                 splits[idx] = {"train": train_nodes, "valid": val_nodes, "test": test_nodes}
             save_dict(di_=splits, filename_=file_path)
         else:
@@ -85,13 +97,11 @@ def split_train_test_nodes(
         split = splits[split_id]
         train_nodes, val_nodes, test_nodes = split["train"], split["valid"], split["test"]
     else:
-        # set up train val and test
-        shuffle = list(range(num_nodes))
-        random.shuffle(shuffle)
-        train_nodes = shuffle[:int(num_nodes * train_ratio / 100)]
-        val_nodes = shuffle[int(num_nodes * train_ratio /
-                                100):int(num_nodes * (train_ratio + valid_ratio) / 100)]
-        test_nodes = shuffle[int(num_nodes * (train_ratio + valid_ratio) / 100):]
+        train_nodes, val_nodes, test_nodes = generate_split(
+            num_nodes=num_nodes,
+            train_ratio=train_ratio,
+            valid_ratio=valid_ratio,
+        )
 
     return np.array(train_nodes), np.array(val_nodes), np.array(test_nodes)
 
@@ -242,7 +252,10 @@ def svm_test(
     embeddings: torch.tensor,
     labels: np.ndarray,
     train_ratios: Tuple[int] = (10, 20, 30, 40),
-    repeat: int = 1,
+    valid_ratios: Tuple[int] = (10, 20, 30, 40),
+    repeat: int = 3,
+    fixed_split: bool = True,
+    split_save_dir: str = "./data",
 ) -> Tuple[List[Tuple[float]]]:
     """Linear regression (node classification) using SVM on embedding.
 
@@ -253,7 +266,12 @@ def svm_test(
         labels (np.ndarray): ground truth labels.
         train_ratios (tuple, optional): split ratio of training set.\
               Defaults to (10, 20, 30, 40).
-        repeat (int, optional): svm repeat times. Defaults to 0.
+        valid_ratios (tuple, optional): split ratio of validation set.\
+              Defaults to (10, 20, 30, 40).
+        repeat (int, optional): svm repeat times. Defaults to 10.
+        fixed_split (bool, optional): save the split after splitting once and load the fixed split \
+            next time. Defaults to True.
+        split_save_dir (str, optional): the dir for saving the fixed split. Defaults to './data'.
 
     Returns:
         Tuple[List[Tuple[float]]]: ([(mean, std),(mean, std),...] of macro_f1 \
@@ -268,9 +286,12 @@ def svm_test(
             train_idx, val_idx, test_idx = split_train_test_nodes(
                 num_nodes=num_nodes,
                 train_ratio=train_ratio,
-                valid_ratio=train_ratio,
+                valid_ratio=valid_ratios,
                 data_name=data_name,
                 split_id=i,
+                split_times=repeat,
+                fixed_split=fixed_split,
+                split_save_dir=split_save_dir,
             )
             X_train, X_test = embeddings[np.concatenate([train_idx, val_idx])], embeddings[test_idx]
             y_train, y_test = labels[np.concatenate([train_idx, val_idx])], labels[test_idx]
@@ -294,6 +315,12 @@ def evaluate_clf_cls(
     embeddings: torch.Tensor,
     quiet: bool = True,
     method: str = "both",
+    clf_repeat: int = 3,
+    cls_repeat: int = 1,
+    train_ratios: Tuple[int] = (10, 20, 30, 40),
+    valid_ratios: Tuple[int] = (10, 20, 30, 40),
+    fixed_split: bool = True,
+    split_save_dir: str = "./data",
 ) -> Tuple[List[Tuple[float]], float]:
     """Evaluation of node classification (linear regression) and clustering.
 
@@ -307,6 +334,16 @@ def evaluate_clf_cls(
         method (bool, optional): method for evaluation, \
             "clf" for linear regression (node classification), \
                 "cls" for node clustering, "both" for both. Defaults to "both".
+        clf_repeat (int, optional): node classification repeat times. Defaults to 3.
+        cls_repeat (int, optional): node clustering repeat times. Defaults to 1.
+        train_ratios (tuple, optional): split ratio of training set for node classification.\
+              Defaults to (10, 20, 30, 40).
+        valid_ratios (tuple, optional): split ratio of validation set.\
+              Defaults to (10, 20, 30, 40).
+        split_times (int, optional): num of the random splits. Defaults to 10.
+        fixed_split (bool, optional): save the split after splitting once and load the fixed split \
+            next time. Defaults to True.
+        split_save_dir (str, optional): the dir for saving the fixed split. Defaults to './data'.
 
     Returns:
         Tuple[List[Tuple[float]], float]: [svm_macro_f1_list, svm_micro_f1_list, \
@@ -326,6 +363,11 @@ def evaluate_clf_cls(
             data_name=data_name,
             embeddings=embeddings,
             labels=labels,
+            train_ratios=train_ratios,
+            valid_ratios=valid_ratios,
+            repeat=clf_repeat,
+            fixed_split=fixed_split,
+            split_save_dir=split_save_dir,
         )
         if not quiet:
             print("SVM test for linear regression:")
@@ -364,9 +406,10 @@ def evaluate_clf_cls(
             purity_mean,
             purity_std,
         ) = kmeans_test(
-            embeddings,
-            labels,
-            num_classes,
+            X=embeddings,
+            y=labels,
+            n_clusters=num_classes,
+            repeat=cls_repeat,
         )
         if not quiet:
             print("K-means test for node clustering:")
@@ -408,6 +451,12 @@ def evaluate_from_embeddings(
     embeddings: torch.Tensor,
     quiet: bool = True,
     method: str = "both",
+    clf_repeat: int = 3,
+    cls_repeat: int = 1,
+    train_ratios: Tuple[int] = (10, 20, 30, 40),
+    valid_ratios: Tuple[int] = (10, 20, 30, 40),
+    fixed_split: bool = True,
+    split_save_dir: str = "./data",
 ) -> Tuple[Dict, Dict]:
     """Evaluate embeddings with node classification (linear regression) and clustering.
 
@@ -421,11 +470,19 @@ def evaluate_from_embeddings(
         method (bool, optional): method for evaluation, \
             "clf" for linear regression (node classification), \
                 "cls" for node clustering, "both" for both. Defaults to "both".
+        clf_repeat (int, optional): node classification repeat times. Defaults to 3
+        cls_repeat (int, optional): node clustering repeat times. Defaults to 1.
+        train_ratios (tuple, optional): split ratio of training set for node classification.\
+              Defaults to (10, 20, 30, 40).
+        valid_ratios (tuple, optional): split ratio of validation set.\
+              Defaults to (10, 20, 30, 40).
+        fixed_split (bool, optional): save the split after splitting once and load the fixed split \
+            next time. Defaults to True.
+        split_save_dir (str, optional): the dir for saving the fixed split. Defaults to './data'.
 
     Returns:
         Tuple[Dict, Dict]: (clustering_results, classification_results)
     """
-    # Call the evaluate_results_nc function with the loaded embeddings
     (
         svm_macro_f1_list,
         svm_micro_f1_list,
@@ -449,9 +506,14 @@ def evaluate_from_embeddings(
         embeddings,
         quiet=quiet,
         method=method,
+        clf_repeat=clf_repeat,
+        cls_repeat=cls_repeat,
+        train_ratios=train_ratios,
+        valid_ratios=valid_ratios,
+        fixed_split=fixed_split,
+        split_save_dir=split_save_dir,
     )
 
-    # Format the output as desired
     clustering_results = {
         "ACC": f"{acc_mean * 100:.2f}±{acc_std * 100:.2f}",
         "NMI": f"{nmi_mean * 100:.2f}±{nmi_std * 100:.2f}",
@@ -465,7 +527,7 @@ def evaluate_from_embeddings(
     svm_micro_f1_list = [f"{res[0] * 100:.2f}±{res[1] * 100:.2f}" for res in svm_micro_f1_list]
 
     classification_results = {}
-    for i, percent in enumerate(["10%", "20%", "30%", "40%"]):
+    for i, percent in enumerate(train_ratios):
         classification_results[f"{percent}_MaF1"] = svm_macro_f1_list[i]
         classification_results[f"{percent}_MiF1"] = svm_micro_f1_list[i]
 

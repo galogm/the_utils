@@ -2,6 +2,7 @@
 """
 
 import os
+import pickle
 from pathlib import Path
 from pathlib import PurePath
 from typing import Tuple
@@ -10,6 +11,24 @@ from typing import Union
 import torch
 
 from .common import get_str_time
+
+
+def load_dict(filename_):
+    with open(filename_, "rb") as f:
+        ret_di = pickle.load(f)
+    return ret_di
+
+
+def save_dict(di_, filename_):
+    # Get the directory path from the filename
+    dir_path = os.path.dirname(filename_)
+
+    # Create the directory if it does not exist
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    with open(filename_, "wb") as f:
+        pickle.dump(di_, f)
 
 
 def get_modelfile_path(model_filename: str) -> PurePath:
