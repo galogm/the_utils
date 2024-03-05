@@ -2,6 +2,13 @@
 
 
 
+## v0.3.3 (2024-03-05)
+
+### Performance
+
+* perf: refine evaluation ([`834c025`](https://github.com/galogm/the_utils/commit/834c025c8e2500d891975fdb013d9c741aea40cd))
+
+
 ## v0.3.2 (2024-03-04)
 
 ### Fix
