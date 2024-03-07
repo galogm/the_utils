@@ -108,7 +108,7 @@ def draw_chart(
     elif isinstance(types, str):
         for _ in range(len(ys)):
             funcs.append(charts(types, ax))
-            if t == "bar":
+            if types == "bar":
                 optional_args.append({
                     "width": bar_width,
                 })
