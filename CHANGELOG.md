@@ -2,6 +2,13 @@
 
 
 
+## v0.3.5 (2024-03-07)
+
+### Fix
+
+* fix: no head for csv2file when is_dict_list=True ([`6c6c26c`](https://github.com/galogm/the_utils/commit/6c6c26cd747b6233e18c3755d128f2c65e89894f))
+
+
 ## v0.3.4 (2024-03-05)
 
 ### Fix
