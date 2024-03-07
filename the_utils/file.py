@@ -1,6 +1,5 @@
 """File Management.
 """
-
 import csv
 import os
 from pathlib import Path
@@ -105,6 +104,10 @@ def csv2file(
                     if os.stat(target_path).st_size == 0:
                         csv_write.writerow(keys)
                     tbody = [{k: b[k] for k in keys} for b in tbody]
+                else:
+                    if os.stat(target_path).st_size == 0:
+                        keys = list(tbody[0].keys())
+                        csv_write.writerow(keys)
 
                 dict_writer = csv.DictWriter(
                     csvfile,
