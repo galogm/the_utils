@@ -14,7 +14,7 @@ fi
 source .env/bin/activate
 
 # # update pip
-python -m pip install -U pip
+python3 -m pip install -U pip
 
 # # torch cuda 11.3
 # python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
@@ -24,6 +24,6 @@ python -m pip install -U pip
 # python -m pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html
 
 # # install requirements
-python -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+python3 -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 echo install requirements successfully!

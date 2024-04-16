@@ -20,7 +20,7 @@
 #           fetch-depth: 0
 #       - uses: actions/setup-python@v4
 #         with:
-#             python-version: '3.8.16'
+#             python-version: '3.8'
 
 #       - name: Set user info
 #         run: |
