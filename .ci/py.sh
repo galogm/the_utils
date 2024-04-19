@@ -23,5 +23,5 @@ fi
 # # install python 3.8, i.e., using pyenv:
 # pyenv install 3.8
 if [ "$flag" -eq 1 ]; then
-    command -v pyenv >/dev/null 2>&1 && pyenv local 3.8 && { echo >&2 "Install python 3.8 using pyenv successfully.";} || { echo >&2 "Pyenv is not installed. Do not install python 3.8 using pyenv."; exit 1;}
+    command -v pyenv >/dev/null 2>&1 && pyenv local 3.8 && { echo >&2 "Install python 3.8 using pyenv successfully.";} || { echo >&2 "Pyenv is not installed. Did not install python 3.8 using pyenv. Please install mannually and retry"; exit 1;}
 fi
