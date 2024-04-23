@@ -2,6 +2,13 @@
 
 
 
+## v0.3.6 (2024-04-23)
+
+### Fix
+
+* fix(plt): types not defined ([`4850e72`](https://github.com/galogm/the_utils/commit/4850e728cb57d617b15fa7069d47f3b5a949737e))
+
+
 ## v0.3.5 (2024-03-07)
 
 ### Fix
