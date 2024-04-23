@@ -2,6 +2,17 @@
 
 
 
+## v0.4.0 (2024-04-23)
+
+### Feature
+
+* feat: add x_label and y_label ([`920bbc4`](https://github.com/galogm/the_utils/commit/920bbc474b2e8eaebd1b372ee5f5609eae75a54e))
+
+### Unknown
+
+* Merge branch &#39;master&#39; of github.com:galogm/graph_utils ([`7536cc9`](https://github.com/galogm/the_utils/commit/7536cc927fed238d03de7996e78281bdd1abd878))
+
+
 ## v0.3.6 (2024-04-23)
 
 ### Fix
