@@ -47,6 +47,8 @@ def draw_chart(
     bar_width: float = 0.25,
     legend_loc: str = "center left",
     legend_bbox_to_anchor: Tuple[float] = (1, 0.5),
+    x_label=None,
+    y_label=None,
 ) -> None:
     """Draw charts.
 
@@ -85,6 +87,9 @@ def draw_chart(
         legend_loc (str, optional): location of the legend. Defaults to "center left".
         legend_bbox_to_anchor (Tuple[float], optional): bbox_to_anchor of the legend. \
             Defaults to (1, 0.5).
+        x_label (str, optional): label for x axis. Defaults to None.
+        y_label (str, optional): label for y axis. Defaults to None.
+
 
     Raises:
         ValueError: "The arg 'types:'{types} has values not supported."
@@ -254,6 +259,10 @@ def draw_chart(
         plt.xlim(xlim)
     if ylim is not None:
         plt.ylim(ylim)
+    if x_label is not None:
+        plt.xlabel(x_label)
+    if y_label is not None:
+        plt.ylabel(y_label)
 
     if save_path is not None:
         plt.savefig(save_path)
