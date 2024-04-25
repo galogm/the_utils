@@ -1,5 +1,6 @@
 """File Management.
 """
+
 import csv
 import os
 from pathlib import Path
@@ -128,8 +129,9 @@ def csv2file(
 
 def save_to_csv_files(
     results: dict,
-    add_info: dict,
     csv_name: str,
+    insert_info: dict = None,
+    append_info: dict = None,
     save_path="./results",
     sort_head: bool = False,
 ) -> None:
@@ -137,8 +139,9 @@ def save_to_csv_files(
 
     Args:
         results (dict): Evaluation results document.
-        add_info (dict): Additional information, such as data set name, method name.
         csv_name (str): csv file name to store.
+        insert_info (dict): Insert information in front of the results. Defaults to None.
+        append_info (dict): Append information after the results. Defaults to None.
         save_path (str, optional): Folder path to store. Defaults to './results'.
         sort_head (bool, optional): whether to sort the head before writing. Defaults to False.
 
@@ -157,12 +160,16 @@ def save_to_csv_files(
                 save_path='./save/',
             )
 
-            add_info = {'data': data_name, 'method': method_name,}
-            save_to_csv_files(clustering_res, add_info, 'clutering.csv')
-            save_to_csv_files(classification_res, add_info, 'classification.csv')
+            insert_info = {'data': data_name, 'method': method_name,}
+            save_to_csv_files(clustering_res, insert_info, 'clutering.csv')
+            save_to_csv_files(classification_res, insert_info, 'classification.csv')
     """
     # save to csv file
-    results.update(add_info)
+    results = {
+        **(insert_info or {}),
+        **results,
+        **(append_info or {}),
+    }
 
     # list of values
     csv2file(

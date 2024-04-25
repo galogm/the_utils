@@ -31,6 +31,7 @@ def draw_chart(
     # pylint: disable=unused-argument
     ymode: str = "s",
     title: str = None,
+    suptitle: str = None,
     set_xticks: bool = False,
     xticks: List[Any] = None,
     tick_labels: List[Any] = None,
@@ -47,8 +48,8 @@ def draw_chart(
     bar_width: float = 0.25,
     legend_loc: str = "center left",
     legend_bbox_to_anchor: Tuple[float] = (1, 0.5),
-    x_label=None,
-    y_label=None,
+    x_label: str = None,
+    y_label: str = None,
 ) -> None:
     """Draw charts.
 
@@ -69,7 +70,8 @@ def draw_chart(
             Defaults to "s".
         ymode (str, optional): all ys with the same tick ('s') or with different ticks ('d'). \
             Defaults to "s".
-        title (str, optional): figure title. Defaults to None.
+        title (str, optional): add a centered title to the figure. Defaults to None.
+        suptitle (str, optional): add a centered suptitle to the figure. Defaults to None.
         set_xticks (bool, optional): set the x ticks. Defaults to True.
         xticks (List[Any], optional): ticks for the x axis. Defaults to None.
         tick_labels (List[Any], optional): tick labels for the x axis. Defaults to None.
@@ -255,6 +257,8 @@ def draw_chart(
     ax.legend(loc=legend_loc, bbox_to_anchor=legend_bbox_to_anchor)
     if title:
         plt.title(title)
+    if suptitle:
+        plt.suptitle(suptitle)
     if xlim is not None:
         plt.xlim(xlim)
     if ylim is not None:
