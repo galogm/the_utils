@@ -2,6 +2,17 @@
 
 
 
+## v0.5.0 (2024-04-25)
+
+### Feature
+
+* feat: add insert_info and append_info ([`4976798`](https://github.com/galogm/the_utils/commit/497679833f21ac94d26de1b08a8f07e39bdd8ec5))
+
+### Unknown
+
+* Merge branch &#39;master&#39; of github.com:galogm/graph_utils ([`e97d3fe`](https://github.com/galogm/the_utils/commit/e97d3fe4c9a4026fedbf4cb1886b9814a19d3bd1))
+
+
 ## v0.4.0 (2024-04-23)
 
 ### Feature
