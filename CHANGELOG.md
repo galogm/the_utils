@@ -2,6 +2,13 @@
 
 
 
+## v0.5.1 (2024-06-24)
+
+### Fix
+
+* fix: update format_value ([`086282b`](https://github.com/galogm/the_utils/commit/086282b39dde4392b689b73fdfc9708a81f53def))
+
+
 ## v0.5.0 (2024-04-25)
 
 ### Feature
