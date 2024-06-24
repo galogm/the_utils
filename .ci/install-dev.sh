@@ -1,8 +1,6 @@
 rm -rf .env
 
-# # install python 3.8.16, i.e., using pyenv:
-# pyenv install 3.8.16
-# pyenv local 3.8.16
+bash .ci/py.sh
 
 # create and activate the virtual environment
 python3 -m venv .env

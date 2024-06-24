@@ -60,6 +60,14 @@ def get_str_time(timezone="Asia/Shanghai"):
     return pytz_now.strftime("%Y-%m-%d-%H:%M:%S")
 
 
+def is_float(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
 def format_value(value) -> Any:
     """Return number as string with comma split.
 
@@ -69,8 +77,8 @@ def format_value(value) -> Any:
     Returns:
         str: string of the number with comma split.
     """
-    if f"{value}".isdecimal():
-        return f"{value:,}"
+    if is_float(value):
+        return f"{float(value):,}"
     return value
 
 
