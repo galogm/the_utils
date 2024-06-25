@@ -64,7 +64,7 @@ def is_float(value):
     try:
         float(value)
         return True
-    except ValueError:
+    except Exception as _:
         return False
 
 
@@ -77,7 +77,7 @@ def format_value(value) -> Any:
     Returns:
         str: string of the number with comma split.
     """
-    if is_float(value):
+    if value is not None and is_float(value):
         return f"{float(value):,}"
     return value
 

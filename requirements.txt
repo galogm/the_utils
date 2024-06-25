@@ -5,3 +5,4 @@ munkres
 pytz
 matplotlib
 scikit-learn
+pandas

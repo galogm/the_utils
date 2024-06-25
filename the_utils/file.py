@@ -7,6 +7,76 @@ from pathlib import Path
 from pathlib import PurePath
 from typing import Any
 from typing import List
+from typing import Union
+
+import pandas as pd
+
+
+def csv_to_table(
+    raw_path: str,
+    save_path: str,
+    row_key: str,
+    col_key: str,
+    val_key: str,
+    fillna: Union[float, str] = None,
+    row_order: List[str] = None,
+    col_order: List[str] = None,
+    average_rank: bool = True,
+    bold_max: bool = True,
+) -> pd.DataFrame:
+    """Transfer a csv into table.
+
+    Args:
+        raw_path (str): raw csv path.
+        save_path (str): path to save the table.
+        row_key (str): key for row index.
+        col_key (str): key for column index.
+        val_key (str): key for value index.
+        fillna (Union[float, str], optional): fill empty cell with the value given. \
+            Defaults to None.
+        row_order (List[str], optional): sort the rows with given order list. Defaults to None.
+        col_order (List[str], optional): sort the columns with given order list. Defaults to None.
+        average_rank (bool, optional): whether to add a column with average ranks. Defaults to True.
+        bold_max (bool, optional): whether to wrap the maximum value of each column \
+            with `**value**`. Defaults to True.
+
+    Returns:
+        pd.DataFrame: table.
+    """
+    pivot_df = pd.read_csv(raw_path).pivot(
+        index=row_key,
+        columns=col_key,
+        values=val_key,
+    )
+
+    if fillna is not None:
+        pivot_df = pivot_df.fillna(fillna)
+    if row_order is not None:
+        pivot_df = pivot_df.reindex(row_order)
+    if col_order is not None:
+        pivot_df = pivot_df[col_order]
+    if average_rank:
+        AR = "Avg. Rank"
+        ranks_df = pivot_df.applymap(
+            lambda x: pd.to_numeric(
+                f"{x}".split("±")[0],
+                errors="coerce",
+            )
+        ).rank(
+            axis=0,
+            method="min",
+            ascending=False,
+        )
+        pivot_df[AR] = ranks_df.mean(axis=1).apply(lambda x: float(f"{x:.2f}"))
+
+    if bold_max:
+        max_values = pivot_df.astype(str).max()
+        for col in pivot_df.columns:
+            chosen = pivot_df[col].min() if average_rank and col == AR else max_values[col]
+            pivot_df[col] = pivot_df[col].apply(lambda x: f"**{x}**" if x == chosen else x)
+
+    pivot_df.to_csv(save_path)
+    return pivot_df
 
 
 def make_parent_dirs(target_path: PurePath) -> None:
