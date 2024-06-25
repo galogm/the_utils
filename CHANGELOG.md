@@ -2,6 +2,13 @@
 
 
 
+## v0.6.0 (2024-06-25)
+
+### Feature
+
+* feat: add csv_to_table and fix is_float ([`8e25a9e`](https://github.com/galogm/the_utils/commit/8e25a9e937b21c2bb366863672b220fa882fc4ee))
+
+
 ## v0.5.1 (2024-06-24)
 
 ### Fix
