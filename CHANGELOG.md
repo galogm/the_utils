@@ -2,6 +2,17 @@
 
 
 
+## v0.6.1 (2024-10-26)
+
+### Fix
+
+* fix: gpu str assert and fix times in file name ([`a682998`](https://github.com/galogm/the_utils/commit/a682998f5aba2aeaf831122824eb51b2af61f0e3))
+
+### Unknown
+
+* Merge branch &#39;master&#39; of github.com:galogm/the_utils ([`d22c863`](https://github.com/galogm/the_utils/commit/d22c863d5fdc0b3b286aa621af7c580f83f07afc))
+
+
 ## v0.6.0 (2024-06-25)
 
 ### Feature
