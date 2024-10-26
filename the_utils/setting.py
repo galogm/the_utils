@@ -58,6 +58,7 @@ def set_device(gpu: str = "0") -> torch.device:
     Returns:
         torch.device: torch device. `device(type='cuda: x')` or `device(type='cpu')`.
     """
+    gpu = f"{gpu}"
     max_device = torch.cuda.device_count() - 1
     if gpu == "none":
         print("Use CPU.")

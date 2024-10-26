@@ -79,7 +79,7 @@ def split_train_test_nodes(
     """
     if fixed_split:
         file_path = (
-            f"{split_save_dir}/fixed_splits/{data_name}-{train_ratio}-{valid_ratio}-splits.npy"
+            f"{split_save_dir}/fixed_splits/{data_name}-{train_ratio}-{valid_ratio}-splitsx{split_times}.npy"
         )
         if not os.path.exists(file_path):
             print("No fixed splits found, generating...")
