@@ -2,6 +2,13 @@
 
 
 
+## v0.6.2 (2024-11-19)
+
+### Fix
+
+* fix: wrong bold_max ([`6be5566`](https://github.com/galogm/the_utils/commit/6be556664626f975bf002f53a8e5425d8bcca687))
+
+
 ## v0.6.1 (2024-10-26)
 
 ### Fix
