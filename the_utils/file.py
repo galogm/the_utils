@@ -70,10 +70,21 @@ def csv_to_table(
         pivot_df[AR] = ranks_df.mean(axis=1).apply(lambda x: float(f"{x:.2f}"))
 
     if bold_max:
-        max_values = pivot_df.astype(str).max()
         for col in pivot_df.columns:
-            chosen = pivot_df[col].min() if average_rank and col == AR else max_values[col]
-            pivot_df[col] = pivot_df[col].apply(lambda x: f"**{x}**" if x == chosen else x)
+            # Parse numeric values for comparison
+            numeric_values = pivot_df[col].apply(
+                lambda x: pd.to_numeric(str(x).split("±")[0], errors="coerce")
+            )
+            if numeric_values.notna().any():
+                chosen = (
+                    numeric_values.min() if average_rank and col == AR else numeric_values.max()
+                )
+                pivot_df[col] = pivot_df[col].apply(
+                    lambda x: (
+                        f"**{x}**"
+                        if pd.to_numeric(str(x).split("±")[0], errors="coerce") == chosen else x
+                    )
+                )
 
     pivot_df.to_csv(save_path)
     return pivot_df
