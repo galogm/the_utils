@@ -2,6 +2,13 @@
 
 
 
+## v0.7.1 (2024-11-20)
+
+### Fix
+
+* fix: move caption befo before resize ([`676b1d7`](https://github.com/galogm/the_utils/commit/676b1d7841841155398170f87ea8375fed0b8374))
+
+
 ## v0.7.0 (2024-11-20)
 
 ### Feature
