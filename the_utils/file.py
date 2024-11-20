@@ -12,6 +12,68 @@ from typing import Union
 import pandas as pd
 
 
+def dataframe_to_latex_3line(
+    df: pd.DataFrame,
+    file_path: str,
+    caption: str = None,
+    label: str = None,
+) -> None:
+    """Convert a DataFrame to a LaTeX 3-line tabular format with bolded \
+        model names and second-largest values underlined.
+
+    Args:
+        df (pd.DataFrame): pd.DataFrame table.
+        file_path (str): Path to save the latex table.
+        caption (str, optional): Table caption. Defaults to None.
+        label (str, optional): Table label. Defaults to None.
+    """
+    df.insert(0, "model", df.index)
+    with open(file_path, "w") as file:
+        # Write table preamble
+        file.write("\\begin{table*}[t]\n")
+        file.write("\\centering\n")
+        file.write("\\renewcommand{\\arraystretch}{1.2}\n")
+        file.write("\\resizebox{\\textwidth}{!}{\n")
+        if caption:
+            file.write(f"\\caption{{{caption}}}\n")
+        file.write("\\begin{tabular}{c|" + "r" * (len(df.columns) - 1) + "}\n")
+        file.write("\\toprule[1pt]\n")
+
+        # Write header
+        file.write(
+            "\\textbf{model} & " + " & ".
+            join([f"\\textbf{{{col if col!= 'Avg. Rank' else 'A.R.'}}}"
+                  for col in df.columns[1:]]) + " \\\\\n"
+        )
+        file.write("\\midrule[0.8pt]\n")
+
+        for _, row in df.iterrows():
+            row_data = []
+            for i, col in enumerate(df.columns):
+
+                val = str(row[col])
+
+                if i == 0:
+                    val = f"\\textbf{{{val}}}"
+                else:
+                    if val.startswith("**"):
+                        val = f"\\textbf{{{val[2:-2]}}}"
+                    if val.startswith("_"):
+                        val = f"\\underline{{{val[1:-1]}}}"
+
+                row_data.append(val)
+
+            file.write(" & ".join(row_data) + " \\\\\n")
+
+        file.write("\\bottomrule[1pt]\n")
+        file.write("\\end{tabular}\n}\n")
+
+        if label:
+            file.write(f"\\label{{{label}}}\n")
+
+        file.write("\\end{table*}\n")
+
+
 def csv_to_table(
     raw_path: str,
     save_path: str,
@@ -23,6 +85,9 @@ def csv_to_table(
     col_order: List[str] = None,
     average_rank: bool = True,
     bold_max: bool = True,
+    save_latex: bool = False,
+    caption: str = "Comparison of Models Across Datasets",
+    label: str = "tab:model_comparison",
 ) -> pd.DataFrame:
     """Transfer a csv into table.
 
@@ -39,6 +104,9 @@ def csv_to_table(
         average_rank (bool, optional): whether to add a column with average ranks. Defaults to True.
         bold_max (bool, optional): whether to wrap the maximum value of each column \
             with `**value**`. Defaults to True.
+        save_latex (bool, optional): whether to save the latex table version. Defaults to True.
+        caption (str, optional): Table caption. Defaults to "Comparison of Models Across Datasets".
+        label (str, optional): Table label. Defaults to "tab:model_comparison".
 
     Returns:
         pd.DataFrame: table.
@@ -57,12 +125,10 @@ def csv_to_table(
         pivot_df = pivot_df[col_order]
     if average_rank:
         AR = "Avg. Rank"
-        ranks_df = pivot_df.applymap(
-            lambda x: pd.to_numeric(
-                f"{x}".split("±")[0],
-                errors="coerce",
-            )
-        ).rank(
+        ranks_df = pivot_df.map(lambda x: pd.to_numeric(
+            f"{x}".split("±")[0],
+            errors="coerce",
+        )).rank(
             axis=0,
             method="min",
             ascending=False,
@@ -73,20 +139,42 @@ def csv_to_table(
         for col in pivot_df.columns:
             # Parse numeric values for comparison
             numeric_values = pivot_df[col].apply(
-                lambda x: pd.to_numeric(str(x).split("±")[0], errors="coerce")
+                lambda x: pd.to_numeric(str(x).split("±", maxsplit=1)[0], errors="coerce")
             )
+            sorted_vals = sorted(numeric_values)
+
             if numeric_values.notna().any():
-                chosen = (
-                    numeric_values.min() if average_rank and col == AR else numeric_values.max()
+                chosen_1, chosen_2 = (
+                    (sorted_vals[0], sorted_vals[1]) if average_rank and col == AR else
+                    (sorted_vals[-1], sorted_vals[-2])
                 )
                 pivot_df[col] = pivot_df[col].apply(
                     lambda x: (
-                        f"**{x}**"
-                        if pd.to_numeric(str(x).split("±")[0], errors="coerce") == chosen else x
+                        f"**{x}**" if pd.to_numeric(
+                            str(x).split("±", maxsplit=1)[0],
+                            errors="coerce",
+                        )
+                        # pylint: disable=cell-var-from-loop
+                        == chosen_1 else (
+                            f"_{x}_" if pd.to_numeric(
+                                str(x).split("±", maxsplit=1)[0],
+                                errors="coerce",
+                            )
+                            # pylint: disable=cell-var-from-loop
+                            == chosen_2 else x
+                        )
                     )
                 )
 
     pivot_df.to_csv(save_path)
+    if save_latex:
+        dataframe_to_latex_3line(
+            pivot_df,
+            file_path=f"{save_path}.tex",
+            caption=caption,
+            label=label,
+        )
+
     return pivot_df
 
 
