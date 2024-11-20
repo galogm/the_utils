@@ -33,9 +33,9 @@ def dataframe_to_latex_3line(
         file.write("\\begin{table*}[t]\n")
         file.write("\\centering\n")
         file.write("\\renewcommand{\\arraystretch}{1.2}\n")
-        file.write("\\resizebox{\\textwidth}{!}{\n")
         if caption:
             file.write(f"\\caption{{{caption}}}\n")
+        file.write("\\resizebox{\\textwidth}{!}{\n")
         file.write("\\begin{tabular}{c|" + "r" * (len(df.columns) - 1) + "}\n")
         file.write("\\toprule[1pt]\n")
 
