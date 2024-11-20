@@ -2,6 +2,13 @@
 
 
 
+## v0.7.0 (2024-11-20)
+
+### Feature
+
+* feat: add save_latex for csv_to_file ([`bae6e12`](https://github.com/galogm/the_utils/commit/bae6e1284098331e5449b54fd325e1a13566c3e6))
+
+
 ## v0.6.2 (2024-11-19)
 
 ### Fix
