@@ -125,10 +125,12 @@ def csv_to_table(
         pivot_df = pivot_df[col_order]
     if average_rank:
         AR = "Avg. Rank"
-        ranks_df = pivot_df.map(lambda x: pd.to_numeric(
-            f"{x}".split("±")[0],
-            errors="coerce",
-        )).rank(
+        ranks_df = pivot_df.applymap(
+            lambda x: pd.to_numeric(
+                f"{x}".split("±")[0],
+                errors="coerce",
+            )
+        ).rank(
             axis=0,
             method="min",
             ascending=False,
