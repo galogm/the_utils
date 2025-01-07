@@ -2,6 +2,13 @@
 
 
 
+## v0.7.2 (2025-01-07)
+
+### Fix
+
+* fix: csv_to_table map ([`253b7c6`](https://github.com/galogm/the_utils/commit/253b7c62a387e67095169dfa8087a074342a48b8))
+
+
 ## v0.7.1 (2024-11-20)
 
 ### Fix
