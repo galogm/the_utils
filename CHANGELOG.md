@@ -2,6 +2,19 @@
 
 
 
+## v0.8.0 (2025-02-20)
+
+### Feature
+
+* feat: add callonce decorator and onetime_reminder ([`87d7cd1`](https://github.com/galogm/the_utils/commit/87d7cd1025fa7c2dd767a575eae711b25c92d993))
+
+* feat: add isort for auto re-order imports on Save ([`eeb407a`](https://github.com/galogm/the_utils/commit/eeb407aba76e6eb3278766d7131274ede5af7571))
+
+### Fix
+
+* fix: update tpl ([`ad4073f`](https://github.com/galogm/the_utils/commit/ad4073f62da258040c9daec20ea516530ae61870))
+
+
 ## v0.7.2 (2025-01-07)
 
 ### Fix
@@ -50,6 +63,10 @@
 
 ## v0.5.1 (2024-06-24)
 
+### Feature
+
+* feat: update cuda installation ([`8e1ab5c`](https://github.com/galogm/the_utils/commit/8e1ab5cc61bbea88c846c88a4dc2cc3a048b0e26))
+
 ### Fix
 
 * fix: update format_value ([`086282b`](https://github.com/galogm/the_utils/commit/086282b39dde4392b689b73fdfc9708a81f53def))
@@ -79,7 +96,17 @@
 
 ## v0.3.6 (2024-04-23)
 
+### Chore
+
+* chore: typo ([`14908d9`](https://github.com/galogm/the_utils/commit/14908d9636b878337a94db589ba078fd13b86384))
+
 ### Fix
+
+* fix: add default formatter ([`910052b`](https://github.com/galogm/the_utils/commit/910052b603bec7020f554e79ee2bdc5aec181456))
+
+* fix: update python version check ([`ac4d2e6`](https://github.com/galogm/the_utils/commit/ac4d2e6c6133172343362fb6afade3f45c088cf5))
+
+* fix: update pyenv scripts in .ci ([`bc05b66`](https://github.com/galogm/the_utils/commit/bc05b66bdbb63f3bf0e6016855afd3e1e6e12679))
 
 * fix(plt): types not defined ([`4850e72`](https://github.com/galogm/the_utils/commit/4850e728cb57d617b15fa7069d47f3b5a949737e))
 
@@ -89,6 +116,10 @@
 ### Fix
 
 * fix: no head for csv2file when is_dict_list=True ([`6c6c26c`](https://github.com/galogm/the_utils/commit/6c6c26cd747b6233e18c3755d128f2c65e89894f))
+
+### Performance
+
+* perf: update ci ([`64fb310`](https://github.com/galogm/the_utils/commit/64fb310f8c1d0138096c24ab8223c0eea417a07e))
 
 
 ## v0.3.4 (2024-03-05)
@@ -170,12 +201,44 @@
 
 * feat: add evaluation utils for unsupervised graph learning ([`e451ee2`](https://github.com/galogm/the_utils/commit/e451ee21b19ce03701aecda62428f615e12403ee))
 
+### Fix
+
+* fix: update ci and README ([`bd1698d`](https://github.com/galogm/the_utils/commit/bd1698d504a062a2b82d8b24208c2330c9962558))
+
 
 ## v0.1.0 (2024-02-29)
+
+### Chore
+
+* chore: update tpl ([`06dffc4`](https://github.com/galogm/the_utils/commit/06dffc43982886df769c28c6c612d90ebe51ef8d))
+
+* chore: update tpl ([`fe97f9c`](https://github.com/galogm/the_utils/commit/fe97f9cc8c86dd4305af200ebaba789e95767b28))
+
+* chore: upate vscode setting ([`7ecc6b2`](https://github.com/galogm/the_utils/commit/7ecc6b2ae556aea1a6b5bbb900c2b43237706ad1))
+
+* chore: add jupyter notebook ([`cbf554b`](https://github.com/galogm/the_utils/commit/cbf554b53f373f420ae71632b7626ee830d7624d))
+
+* chore: update installation and linter &amp; auto-formatter ([`9ab912d`](https://github.com/galogm/the_utils/commit/9ab912da4ee1fce531471a17cf14b80166d639d0))
+
+* chore: update pre-commit-config ([`e46b826`](https://github.com/galogm/the_utils/commit/e46b826950e7d209e98ada54cb44e21f135492d5))
+
+* chore: update gitignore ([`14049f2`](https://github.com/galogm/the_utils/commit/14049f22ffe73f804abcc83feceb0c14459f89c5))
+
+* chore: update .vscode and gitignore ([`36d940d`](https://github.com/galogm/the_utils/commit/36d940d880849764e6dfb04f5c3e2409b61fdc01))
+
+* chore: change to py36 ([`13983fc`](https://github.com/galogm/the_utils/commit/13983fc7f6f9f6478ae65b995d63c79989c9efef))
+
+* chore: add md format and disable no-name-in-module, no-member ([`8e7df1a`](https://github.com/galogm/the_utils/commit/8e7df1a2a0ca2313aebd047347a80a0981178513))
 
 ### Feature
 
 * feat: init ([`9291f46`](https://github.com/galogm/the_utils/commit/9291f46db7d2d46a55092847d4d4d05fa37ec386))
+
+* feat: add github actions for pip package release ([`651e45a`](https://github.com/galogm/the_utils/commit/651e45a2964ac653a190bcff7d7209fee16294f3))
+
+* feat: add pre-commit for pylint, yapf and import reorder ([`81afe3b`](https://github.com/galogm/the_utils/commit/81afe3b0163a7859b582340ae6337a9aaaec0aa9))
+
+* feat: add .vscode setting ([`809bb6d`](https://github.com/galogm/the_utils/commit/809bb6df747bfab0b1b0d22e851ced61e55a12c3))
 
 ### Unknown
 
