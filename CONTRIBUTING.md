@@ -4,9 +4,9 @@
 - Install env with `python>=3.8`, e.g., for linux run:
 
 ```bash
-# install python 3.8.16, e.g, if using pyenv run:
-# pyenv install 3.8.16
-# pyenv local 3.8.16
+# install python 3.8, e.g, if using pyenv run:
+# pyenv install 3.8
+# pyenv local 3.8
 $ bash .ci/install-dev.sh
 $ bash .ci/install.sh
 

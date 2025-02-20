@@ -8,11 +8,11 @@ source .env/bin/activate
 
 # update pip
 # add a source if necessary: -i https://pypi.tuna.tsinghua.edu.cn/simple/
-python -m pip install -U pip
+python3 -m pip install -U pip
 
 # install requirements
 # add a source if necessary: -i https://pypi.tuna.tsinghua.edu.cn/simple/
-python -m pip install -r requirements-dev.txt
+python3 -m pip install -r requirements-dev.txt
 
 pre-commit install
 
