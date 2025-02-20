@@ -45,7 +45,7 @@ column_limit = 100
 line-length = 100
 
 [tool.semantic_release]
-version_variables = ["py_setting/__init__.py:__version__", "docs/conf.py:release"]
+version_variables = ["the_utils/__init__.py:__version__", "docs/conf.py:release"]
 version_toml = ["pyproject.toml:project.version"]
 major_on_zero = false
 changelog_file = "CHANGELOG.md"

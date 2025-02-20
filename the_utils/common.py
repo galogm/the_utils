@@ -2,13 +2,33 @@
 """
 
 from datetime import datetime
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Union
+from functools import wraps
+from typing import Any, Dict, List, Union
 
 import pytz
 from texttable import Texttable
+
+
+def callonce(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not wrapper.called:
+            wrapper.called = True
+            return f(*args, **kwargs)
+        return False
+
+    wrapper.called = False
+    return wrapper
+
+
+@callonce
+def onetime_reminder(reminder):
+    """Run only once globally.
+
+    Args:
+        reminder (str): string to be printed.
+    """
+    print(reminder)
 
 
 def format_result(
@@ -37,11 +57,13 @@ def format_result(
     if source is not None:
         kwargs.update({"src": source})
 
-    kwargs.update({
-        "ds": dataset,
-        "model": model,
-        "time": get_str_time(timezone),
-    })
+    kwargs.update(
+        {
+            "ds": dataset,
+            "model": model,
+            "time": get_str_time(timezone),
+        }
+    )
     return kwargs
 
 
@@ -64,6 +86,7 @@ def is_float(value):
     try:
         float(value)
         return True
+    # pylint: disable=broad-exception-caught
     except Exception as _:
         return False
 
@@ -115,7 +138,8 @@ def tab_printer(
             [
                 k.replace("_", " "),
                 f"{args[k]}" if isinstance(args[k], bool) else format_value(args[k]),
-            ] for k in keys
+            ]
+            for k in keys
         ]
     )
     if cols_align is not None:
