@@ -2,6 +2,13 @@
 
 
 
+## v0.9.0 (2025-05-30)
+
+### Feature
+
+* feat: add logger ([`38abdf9`](https://github.com/galogm/the_utils/commit/38abdf9e8219f692836a43eb2ff7355f42015bac))
+
+
 ## v0.8.0 (2025-02-20)
 
 ### Feature
